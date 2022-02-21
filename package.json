@@ -1,0 +1,22 @@
+{
+  "name": "movies-library",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fuad-bassam/Movies-Library.git"
+  },
+  "author": "fuad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fuad-bassam/Movies-Library/issues"
+  },
+  "homepage": "https://github.com/fuad-bassam/Movies-Library#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
