@@ -2,19 +2,22 @@
 const express = require("express");
 const moviesJson = require("./Movie Data/movies.json");
 const app = express();
-
 const axios = require("axios");
 const dotenv = require("dotenv");
 dotenv.config();
 const APIKEY = process.env.APIKEY;
+const PORT = process.env.PORT;
 
-function moviesDTO(id ,title, release_date, poster_path,overview) {
-  this.id=id;
+
+
+
+function moviesDTO(id, title, release_date, poster_path, overview) {
+    this.id = id;
     this.title = title;
-    this.release_date =release_date;
+    this.release_date = release_date;
     this.poster_path = poster_path;
     this.overview = overview;
-    
+
 }
 
 
@@ -37,12 +40,14 @@ function mainPageHandler(request, response) {
     return response.json(listMovies);
 }
 
+//  use this in the browser http://localhost:3000/trending 
+
 function trendingAPlHandler(request, response) {
     let result = [];
-    let res= axios.get(`https://api.themoviedb.org/3/trending/all/week?api_key=${APIKEY}&language=en-US`)
+    axios.get(`https://api.themoviedb.org/3/trending/all/week?api_key=${APIKEY}`)
         .then(apiResponse => {
             apiResponse.data.results.map(value => {
-                let movieCard = new Movie(value.id || "N/A", value.title || "N/A", value.release_date || "N/A", value.poster_path || "N/A", value.overview || "N/A");
+                let movieCard = new moviesDTO(value.id || "N/A", value.title || "N/A", value.release_date || "N/A", value.poster_path || "N/A", value.overview || "N/A");
                 result.push(movieCard);
             });
             return response.status(200).json(result);
@@ -51,19 +56,20 @@ function trendingAPlHandler(request, response) {
         });
 };
 
-// https://api.themoviedb.org/3/trending/all/day?api_key=<<api_key>>
+//  use this in the browser  http://localhost:3000/search?query=brad
 
 function searchHandler(request, response) {
 
-    response.send("Welcome to search Page");
-    const search = req.query.Movie;
+    // response.send("Welcome to search Page");
+    const search = request.query.query;
     let result = [];
-    console.log(request);
-    let res = axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&language=en-US&query=${search}&page=2`)
+    console.log(search)
+    // console.log(request);
+    axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&language=en-US&query=${search}&page=1&include_adult=false`)
         .then(apiResponse => {
             apiResponse.data.results.map(value => {
-                let oneMovie = new Movie(value.id || "N/A", value.title || "N/A", value.release_date || "N/A", value.poster_path || "N/A", value.overview || "N/A");
-                result.push(oneMovie);
+                let movieCard = new moviesDTO(value.id || "N/A", value.title || "N/A", value.release_date || "N/A", value.poster_path || "N/A", value.overview || "N/A");
+                result.push(movieCard);
             });
             return response.status(200).json(result);
         }).catch(error => {
@@ -71,38 +77,36 @@ function searchHandler(request, response) {
         });
 };
 
-function personHandler(request, response) {
 
-    response.send("Welcome to search Page");
-    const search = req.query.Movie;
+//  use this in the browser     http://localhost:3000/popular
+
+function popularHandler(request, response) {
+
     let result = [];
-    console.log(request);
-    let res = axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&language=en-US&query=${search}&page=2`)
+    axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${APIKEY}&language=en-US&page=1`)
         .then(apiResponse => {
             apiResponse.data.results.map(value => {
-                let oneMovie = new Movie(value.id || "N/A", value.title || "N/A", value.release_date || "N/A", value.poster_path || "N/A", value.overview || "N/A");
-                result.push(oneMovie);
+                let movieCard = new moviesDTO(value.id || "N/A", value.title || "N/A", value.release_date || "N/A", value.poster_path || "N/A", value.overview || "N/A");
+                result.push(movieCard);
             });
             return response.status(200).json(result);
         }).catch(error => {
             errorHandler(error, request, response);
         });
 };
+
+
+
+//  use this in the browser  http://localhost:3000/jobs
 
 function jobsHandler(request, response) {
 
-    response.send("Welcome to jobs Page");
-  
-    let result = [];
+
     // console.log(request);
-    let res = axios.get(`https://api.themoviedb.org/3/configuration/jobs?api_key=${APIKEY}`)
+    axios.get(`https://api.themoviedb.org/3/configuration/jobs?api_key=${APIKEY}`)
         .then(apiResponse => {
-            // apiResponse.data.results.map(value => {
-            //     let oneMovie = new Movie(value.id || "N/A", value.title || "N/A", value.release_date || "N/A", value.poster_path || "N/A", value.overview || "N/A");
-            //     result.push(oneMovie);
-            // });
-            console.log(apiResponse.data);
-            return response.status(200).json(result);
+
+            return response.status(200).json(apiResponse.data);
         }).catch(error => {
             errorHandler(error, request, response);
         });
@@ -110,31 +114,56 @@ function jobsHandler(request, response) {
 
 function errorHandler(request, response) {
 
-    if (response.status == 404) {
-        return response.status(404).send("page not found error");
-    } else if (response.status == 500) {
-        return response.status(500).send("server error");
+    // if (response.status == 404) {
+    //     return response.status(404).send("page not found error");
+    // } else if (response.status == 500) {
+    //     return response.status(500).send("server error");
 
-    }
+    // }
+
+
     return response.status(404).send("page not found error");
 
 }
+
+
+//////////////////////////////////////////////////////
+// function similarHandler(request, response) {
+
+//     const movie_id =request.data
+//     let result = [];
+//     console.log(movie_id);
+//    axios.get(`https://api.themoviedb.org/3/movie/${movie_id}/similar?api_key=${APIKEY}&language=en-US&page=1
+//    `)
+//         .then(apiResponse => {
+//             apiResponse.data.results.map(value => {
+//                 let movieCard = new moviesDTO(value.id || "N/A", value.title || "N/A", value.release_date || "N/A", value.poster_path || "N/A", value.overview || "N/A");
+//                 result.push(movieCard);
+//             });
+//             return response.status(200).json(result);
+//         }).catch(error => {
+//             errorHandler(error, request, response);
+//         });
+// };
+
+////////////////////////////////////////////////////////////
+
+
+
 app.get('/trending', trendingAPlHandler);
 app.get('/favorite', favoriteHandler);
 app.get('/search', searchHandler);
-app.get('/person',personHandler);
-app.get('/jobs',jobsHandler);
+app.get('/jobs', jobsHandler);
+app.get('/popular', popularHandler);
 app.get('/', mainPageHandler);
+//not :above each function example how can you use it
 
 app.use('*', errorHandler);
-
-// GET/configuration/jobs
-// //{person_id}
-// /movie/{movie_id}/images
+// app.get('/person',similarHandler);
 
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
 
-    console.log("srever on")
+    console.log("srever on ,Port " + PORT)
 
 });
