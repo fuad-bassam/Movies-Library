@@ -14,6 +14,13 @@ this.overview = overview;
 
 function favoriteHandler( request ,response){
 
+  
+    response.send("Welcome to Favorite Page");
+    
+};
+
+ function mainPageHandler( request ,response){
+
 const listMovies = [];
 moviesJson.mov.forEach(element => {
     var catchMovie = new moviesDTO(element.title ,element.poster_path ,element.overview)
@@ -22,12 +29,6 @@ moviesJson.mov.forEach(element => {
 });
 
 return response.json(listMovies);
-
-};
-
- function mainPageHandler( request ,response){
-     console.log(moviesJson);
- response.send("hi shelh");
 
  };
 function errorHandler(request ,response) {
@@ -50,6 +51,6 @@ app.use('*',errorHandler);
 
 app.listen(3000,()=>{
 
-console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+console.log("Server On")
 
 });
