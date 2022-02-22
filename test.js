@@ -125,6 +125,7 @@ app.get('/search', searchHandler);
 app.get('/person',personHandler);
 app.get('/jobs',jobsHandler);
 app.get('/', mainPageHandler);
+
 app.use('*', errorHandler);
 
 // GET/configuration/jobs
