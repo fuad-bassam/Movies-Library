@@ -1,29 +1,54 @@
 
-const express = require("express");
-const moviesJson = require("./Movie Data/movies.json");
-const app = express();
-const axios = require("axios");
-const dotenv = require("dotenv");
-dotenv.config();
-const APIKEY = process.env.APIKEY;
-const PORT = process.env.PORT;
 
 const pg = require("pg");
 const DATABASE_URL = process.env.DATABASE_URL;
 
+
 const client = new pg.Client(DATABASE_URL);
 
-function moviesDTO(id, title, release_date, poster_path, overview) {
-    this.id = id;
-    this.title = title;
-    this.release_date = release_date;
-    this.poster_path = poster_path;
-    this.overview = overview;
 
+function favoriteHandler( request ,response){
+
+
+  
+    response.send("Welcome to Favorite Page");
+    
+};
+
+ function mainPageHandler( request ,response){
+
+const listMovies = [];
+moviesJson.mov.forEach(element => {
+    var catchMovie = new moviesDTO(element.title ,element.poster_path ,element.overview)
+    listMovies.push(catchMovie)
+
+});
+
+return response.json(listMovies);
+
+ };
+function errorHandler(request ,response) {
+
+    if (response.status == 404) {
+      return  response.status(404).send("page not found error");
+    }else if(response.status == 500){
+        return  response.status(500).send("server error");
+       
+    }
+    return  response.status(404).send("page not found error");
+    
 }
+ app.get('/favorite',favoriteHandler);
+ app.get('/',mainPageHandler);
+app.use('*',errorHandler);
 
 
 
+
+app.listen(3000,()=>{
+
+console.log("Server On")
+=======
 function favoriteHandler(request, response) {
 
     console.log(moviesJson);
