@@ -1,8 +1,14 @@
 
 
+const pg = require("pg");
+const DATABASE_URL = process.env.DATABASE_URL;
+
+
+const client = new pg.Client(DATABASE_URL);
 
 
 function favoriteHandler( request ,response){
+
 
   
     response.send("Welcome to Favorite Page");
@@ -133,6 +139,30 @@ function jobsHandler(request, response) {
         });
 };
 
+
+
+function addMovieHandler(request, response) {
+    const postBody = request.body;
+    const sql = `INSERT INTO movieL(release_date,title,poster_path,overview,my_comment) VALUES($1,$2,$3,$4,$5) RETURNING *;`;
+ 
+    const values = [postBody.release_date, postBody.title, postBody.poster_path, postBody.overview,postBody.my_comment];
+    client.query(sql, values).then((result) => {
+        response.status(201).json(result.rows);
+    }).catch(error => {
+        errorHandler(error, request, response);
+    });
+};
+function getMoviesHandler(request,response) {
+    const sql = `SELECT * FROM movieL;`;
+    client.query(sql).then((result) => {
+        response.status(201).json(result.rows);
+    }).catch(error => {
+        errorHandler(error, request, response);
+    });
+}
+
+client.connect()
+
 function errorHandler(request, response) {
 
     // if (response.status == 404) {
@@ -170,13 +200,15 @@ function errorHandler(request, response) {
 ////////////////////////////////////////////////////////////
 
 
-
+app.use(express.json());
 app.get('/trending', trendingAPlHandler);
 app.get('/favorite', favoriteHandler);
 app.get('/search', searchHandler);
 app.get('/jobs', jobsHandler);
 app.get('/popular', popularHandler);
 app.get('/', mainPageHandler);
+app.post('/addMovie', addMovieHandler);
+app.get('/getMovies', getMoviesHandler);
 //not :above each function example how can you use it
 
 app.use('*', errorHandler);
@@ -188,3 +220,4 @@ app.listen(PORT, () => {
     console.log("srever on ,Port " + PORT)
 
 });
+

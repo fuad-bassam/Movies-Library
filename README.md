@@ -47,3 +47,17 @@ add more features( APIs )like
 ## The new WRRC
 
 ![WRRC](https://firebasestorage.googleapis.com/v0/b/f22f-3c23f.appspot.com/o/Task%2012.PNG?alt=media&token=8f75a58f-bc00-4136-b1d0-4b271c4dff41)
+
+
+
+ ----------
+ # v1.2 - 23/2/2022
+ -----
+create our project database
+connect the database with the project in two methods
+- addMovieHandler (to post the data for database)
+- getMoviesHandler (to get the data from database)
+## The new WRRC
+
+![WRRC](https://firebasestorage.googleapis.com/v0/b/f22f-3c23f.appspot.com/o/task13.PNG?alt=media&token=1652b9e7-f51b-4b88-a9a4-cf2dc1fbc0f2)
+
