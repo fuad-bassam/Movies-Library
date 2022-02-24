@@ -7,11 +7,10 @@ const dotenv = require("dotenv");
 dotenv.config();
 const APIKEY = process.env.APIKEY;
 const PORT = process.env.PORT;
+const DATABASE_URL = process.env.DATABASE_URL;
 
 const pg = require("pg");
 const { disable } = require("express/lib/application");
-const DATABASE_URL = process.env.DATABASE_URL;
-
 const client = new pg.Client(DATABASE_URL);
 
 function moviesDTO(id, title, release_date, poster_path, overview) {
@@ -120,7 +119,7 @@ function jobsHandler(request, response) {
 
 
 
-function addMovieHandler(request, response) {
+function movieLHandler(request, response) {
     const postBody = request.body;
     const sql = `INSERT INTO movieL(release_date,title,poster_path,overview,my_comment) VALUES($1,$2,$3,$4,$5) RETURNING *;`;
 
@@ -140,7 +139,6 @@ function getMoviesHandler(request, response) {
     });
 }
 
-client.connect()
 
 function errorHandler(error,request, response ,next ) {
 
@@ -203,9 +201,62 @@ function similarHandler(request, response) {
         });
 };
 
-////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+//  use this in the browser http://localhost:3000/UPDATE1/8 and add data in the
+
+function updateHandler(request, response) {
+    const id = request.params.id;
+    const movieUpdate = request.body;
+
+    const sql = `UPDATE movieL SET my_comment=$1 WHERE id=$2 RETURNING *;`;
+    const values = [movieUpdate.my_comment, id];
+
+    client.query(sql, values).then((result) => {
+        return response.status(200).json(result.rows);
+    }).catch((error) => {
+        errorHandler(error, request, response);
+    })
+}
+
+//  use this in the browser http://localhost:3000/DELETE1/8
 
 
+
+function deleteHandler(request, response) {
+    const id = request.params.id;
+
+    const sql = `DELETE FROM movieL WHERE id=$1 ;`;
+    const value = [id];
+
+    client.query(sql, value)
+        .then((result) => {
+            return response.status(204).json({});
+        }).catch((error) => {
+            errorHandler(error, request, response);
+        })
+}
+
+//  use this in the browser http://localhost:3000/getMovie/8
+
+
+function getMovieByIdHandler(request, response) {
+    const id = request.params.id;
+
+    const sql = `SELECT * FROM movieL WHERE id=$1 ;`;
+    const value = [id];
+
+    client.query(sql, value)
+        .then((result) => {
+            return response.status(200).json(result.rows);
+        }).catch((error) => {
+            errorHandler(error, request, response);
+        })
+
+}
+
+
+////////////////////////////////////////
 app.use(express.json());
 app.get('/trending', trendingAPlHandler);
 app.get('/favorite', favoriteHandler);
@@ -213,15 +264,19 @@ app.get('/search', searchHandler);
 app.get('/jobs', jobsHandler);
 app.get('/popular', popularHandler);
 app.get('/', mainPageHandler);
-app.post('/addMovie', addMovieHandler);
+app.post('/movieL', movieLHandler);
 app.get('/getMovies', getMoviesHandler);
-
-//not :above each function example how can you use it
 app.get('/similar', similarHandler);
+app.put('/UPDATE1/:id', updateHandler);
+app.delete('/DELETE1/:id', deleteHandler);
+app.get('/getMovie/:id', getMovieByIdHandler);
+//not :above each function example how can you use it
+
 app.use( notFoundHandler);
 app.use( errorHandler);
 
 
+client.connect();
 
 app.listen(PORT, () => {
 

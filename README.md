@@ -61,3 +61,15 @@ connect the database with the project in two methods
 
 ![WRRC](https://firebasestorage.googleapis.com/v0/b/f22f-3c23f.appspot.com/o/task13.PNG?alt=media&token=1652b9e7-f51b-4b88-a9a4-cf2dc1fbc0f2)
 
+
+ ----------
+ # v1.3 - 24/2/2022
+ -----
+
+add 3 methods to connect on database
+- get the movie from his id
+- update the data for movie
+- delete the mobie from the database
+## The new WRRC
+
+![WRRC](https://firebasestorage.googleapis.com/v0/b/f22f-3c23f.appspot.com/o/task%2014.PNG?alt=media&token=d8835281-eff8-4307-be63-4975640ca44f)
