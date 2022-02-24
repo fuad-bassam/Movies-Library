@@ -215,6 +215,7 @@ function updateHandler(request, response) {
     client.query(sql, values).then((result) => {
         return response.status(200).json(result.rows);
     }).catch((error) => {
+        
         errorHandler(error, request, response);
     })
 }
