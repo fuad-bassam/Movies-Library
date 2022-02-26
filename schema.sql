@@ -1,10 +1,9 @@
-DROP TABLE IF EXISTS movieL;
+DROP TABLE IF EXISTS fuadMovie;
 
-CREATE TABLE IF NOT EXISTS movieL(
+CREATE TABLE IF NOT EXISTS FuadMovie(
 id SERIAL PRIMARY KEY,
-release_date DATE,
-title VARCHAR(1000),
-poster_path VARCHAR(1000),
-overview VARCHAR(10000),
-my_comment VARCHAR(1000)
+title VARCHAR(5000),
+release_date INTEGER,
+poster_path VARCHAR(5000),
+overview VARCHAR(5000)
 );

@@ -119,19 +119,21 @@ function jobsHandler(request, response) {
 
 
 
-function movieLHandler(request, response) {
+function fuadMovieHandler(request, response) {
     const postBody = request.body;
-    const sql = `INSERT INTO movieL(release_date,title,poster_path,overview,my_comment) VALUES($1,$2,$3,$4,$5) RETURNING *;`;
+    const sql = `INSERT INTO fuadMovie(title,release_date,poster_path,overview) VALUES($1,$2,$3,$4) RETURNING *;`;
 
-    const values = [postBody.release_date, postBody.title, postBody.poster_path, postBody.overview, postBody.my_comment];
-    client.query(sql, values).then((result) => {
+    const values = [postBody.title, postBody.release_date, postBody.poster_path, postBody.overview];
+
+
+    client.query(sql,values).then((result) => {
         response.status(201).json(result.rows);
     }).catch(error => {
        errorHandler(error,request, response );
     });
 };
 function getMoviesHandler(request, response) {
-    const sql = `SELECT * FROM movieL;`;
+    const sql = `SELECT * FROM fuadMovie;`;
     client.query(sql).then((result) => {
         response.status(201).json(result.rows);
     }).catch(error => {
@@ -203,30 +205,31 @@ function similarHandler(request, response) {
 
 ///////////////////////////////////////////////////////////
 
-//  use this in the browser http://localhost:3000/UPDATE1/8 and add data in the
+//  use this in the browser http://localhost:3000/updata/8 and add data in the
 
 function updateHandler(request, response) {
     const id = request.params.id;
     const movieUpdate = request.body;
-
-    const sql = `UPDATE movieL SET my_comment=$1 WHERE id=$2 RETURNING *;`;
-    const values = [movieUpdate.my_comment, id];
+console.log(movieUpdate);
+    const sql = `UPDATE fuadMovie SET title=$1, release_date=$2, poster_path=$3, overview=$4  WHERE id=$5 RETURNING *;`;
+    const values = [ movieUpdate.title, movieUpdate.release_date, movieUpdate.poster_path, movieUpdate.overview , id];
 
     client.query(sql, values).then((result) => {
         return response.status(200).json(result.rows);
     }).catch((error) => {
+        
         errorHandler(error, request, response);
     })
 }
 
-//  use this in the browser http://localhost:3000/DELETE1/8
+//  use this in the browser http://localhost:3000/delete/8
 
 
 
 function deleteHandler(request, response) {
     const id = request.params.id;
 
-    const sql = `DELETE FROM movieL WHERE id=$1 ;`;
+    const sql = `DELETE FROM fuadMovie WHERE id=$1 ;`;
     const value = [id];
 
     client.query(sql, value)
@@ -243,10 +246,9 @@ function deleteHandler(request, response) {
 function getMovieByIdHandler(request, response) {
     const id = request.params.id;
 
-    const sql = `SELECT * FROM movieL WHERE id=$1 ;`;
-    const value = [id];
+    const sql = `SELECT * FROM fuadMovie WHERE id=${id} ;`;
 
-    client.query(sql, value)
+    client.query(sql)
         .then((result) => {
             return response.status(200).json(result.rows);
         }).catch((error) => {
@@ -264,11 +266,11 @@ app.get('/search', searchHandler);
 app.get('/jobs', jobsHandler);
 app.get('/popular', popularHandler);
 app.get('/', mainPageHandler);
-app.post('/movieL', movieLHandler);
+app.post('/addMovie', fuadMovieHandler);
 app.get('/getMovies', getMoviesHandler);
 app.get('/similar', similarHandler);
-app.put('/UPDATE1/:id', updateHandler);
-app.delete('/DELETE1/:id', deleteHandler);
+app.put('/updata/:id', updateHandler);
+app.delete('/delete/:id', deleteHandler);
 app.get('/getMovie/:id', getMovieByIdHandler);
 //not :above each function example how can you use it
 
@@ -276,11 +278,12 @@ app.use( notFoundHandler);
 app.use( errorHandler);
 
 
-client.connect();
-
+client.connect()
+.then(()=>{
 app.listen(PORT, () => {
 
     console.log("srever on ,Port " + PORT)
 
 });
 
+});
