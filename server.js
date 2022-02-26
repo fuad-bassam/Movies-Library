@@ -11,7 +11,18 @@ const DATABASE_URL = process.env.DATABASE_URL;
 
 const pg = require("pg");
 const { disable } = require("express/lib/application");
-const client = new pg.Client(DATABASE_URL);
+
+// connection in local 
+// const client = new pg.Client(DATABASE_URL);
+
+
+// connection in heroku
+const client = new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
+
+
 
 function moviesDTO(id, title, release_date, poster_path, overview) {
     this.id = id;
