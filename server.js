@@ -1,9 +1,13 @@
 
 const express = require("express");
 const moviesJson = require("./Movie Data/movies.json");
+const cors = require("cors");
 const app = express();
 const axios = require("axios");
 const dotenv = require("dotenv");
+
+
+app.use(cors());
 dotenv.config();
 const APIKEY = process.env.APIKEY;
 const PORT = process.env.PORT;
