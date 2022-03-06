@@ -17,14 +17,14 @@ const pg = require("pg");
 const { disable } = require("express/lib/application");
 
 // connection in local 
-const client = new pg.Client(DATABASE_URL);
+// const client = new pg.Client(DATABASE_URL);
 
 
 // connection in heroku
-// const client = new pg.Client({
-//     connectionString: process.env.DATABASE_URL,
-//     ssl: { rejectUnauthorized: false }
-// });
+const client = new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
 
 
 
