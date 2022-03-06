@@ -17,14 +17,14 @@ const pg = require("pg");
 const { disable } = require("express/lib/application");
 
 // connection in local 
-// const client = new pg.Client(DATABASE_URL);
+const client = new pg.Client(DATABASE_URL);
 
 
 // connection in heroku
-const client = new pg.Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-});
+// const client = new pg.Client({
+//     connectionString: process.env.DATABASE_URL,
+//     ssl: { rejectUnauthorized: false }
+// });
 
 
 
@@ -136,9 +136,9 @@ function jobsHandler(request, response) {
 
 function fuadMovieHandler(request, response) {
     const postBody = request.body;
-    const sql = `INSERT INTO fuadMovie(title,release_date,poster_path,overview) VALUES($1,$2,$3,$4) RETURNING *;`;
+    const sql = `INSERT INTO fuadMovie(title,release_date,poster_path,overview,user_comment) VALUES($1,$2,$3,$4,$5) RETURNING *;`;
 
-    const values = [postBody.title, postBody.release_date, postBody.poster_path, postBody.overview];
+    const values = [postBody.title, postBody.release_date, postBody.poster_path, postBody.overview ,postBody.user_comment];
 
 
     client.query(sql,values).then((result) => {
